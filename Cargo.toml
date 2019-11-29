@@ -5,7 +5,7 @@ authors = ["Kazzix <kazzix14@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/kazzix14/ezui.git"
 keywords = ["gui", "vst"]
-lisence-file = "LISENCE"
+license-file = "LISENCE"
 description = "An eazy to use small GUI library. main purpose of this crate is to help you to make GUI for VST audio plugins."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
