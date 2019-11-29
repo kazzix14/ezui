@@ -1,5 +1,5 @@
 [package]
-name = "sg4m"
+name = "ezui"
 version = "0.0.1"
 authors = ["Kazzix <kazzix14@gmail.com>"]
 edition = "2018"
