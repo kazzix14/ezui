@@ -1,7 +1,7 @@
-use sg4m::mouse::*;
-use sg4m::standard::*;
-use sg4m::widget::*;
-use sg4m::*;
+use ezui::mouse::*;
+use ezui::standard::*;
+use ezui::widget::*;
+use ezui::*;
 
 use glium;
 use glium::glutin;
