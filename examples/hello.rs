@@ -19,7 +19,7 @@ fn main() {
         .build_glium()
         .unwrap();
 
-    let mut ui = Ui::new(&display);
+    let mut ui = Ui::new(display.clone());
 
     let font =
         FontTexture::new(&display, FONT_RAW, 50, FontTexture::ascii_character_list()).unwrap();

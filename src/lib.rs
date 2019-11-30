@@ -17,15 +17,15 @@ use mouse::*;
 use system::System;
 pub use winit;
 
-pub struct Ui<'a> {
+pub struct Ui {
     mouse: MouseStatus,
-    display: &'a glutin_backend::GlutinFacade,
+    display: glutin_backend::GlutinFacade,
     system: System,
 }
 
-impl<'a> Ui<'a> {
-    pub fn new(display: &'a glutin_backend::GlutinFacade) -> Ui {
-        let system = System::new(display);
+impl Ui {
+    pub fn new(display: glutin_backend::GlutinFacade) -> Ui {
+        let system = System::new(&display);
 
         Ui {
             mouse: MouseStatus::default(),
@@ -43,7 +43,7 @@ impl<'a> Ui<'a> {
             &mut System,
         ),
     {
-        let display = self.display;
+        let display = &self.display;
         let mouse = &mut self.mouse;
         let system = &mut self.system;
 
