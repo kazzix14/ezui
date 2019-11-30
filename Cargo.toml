@@ -19,5 +19,5 @@ winit = {version = "0.5.9", git = "https://github.com/Boscop/winit-vst"}
 image = "0.22.1"
 nalgebra = "0.18.1"
 
-#[patch.crates-io]
-#winit = { git = "https://github.com/Boscop/winit-vst" }
+[patch.crates-io]
+winit = { git = "https://github.com/Boscop/winit-vst" }
