@@ -15,6 +15,7 @@ use image;
 pub use image::ImageFormat;
 use mouse::*;
 use system::System;
+pub use winit;
 
 pub struct Ui<'a> {
     mouse: MouseStatus,
