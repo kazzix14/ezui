@@ -16,6 +16,7 @@ pub use image::ImageFormat;
 use mouse::*;
 use system::System;
 pub use winit;
+use std::sync::Arc;
 
 pub struct Ui {
     mouse: MouseStatus,
@@ -64,11 +65,11 @@ impl Ui {
         target.finish().unwrap();
     }
 
-    pub fn build_text_display<'b>(
+    pub fn build_text_display(
         &self,
-        font: &'b glium_text_rusttype::FontTexture,
-        text: &'b str,
-    ) -> TextDisplay<&'b FontTexture> {
+        font: Arc<glium_text_rusttype::FontTexture>,
+        text: &'static str,
+    ) -> TextDisplay<Arc<FontTexture>> {
         TextDisplay::new(&self.system.text_system, font, text)
     }
 }

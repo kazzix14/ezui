@@ -15,18 +15,20 @@ use text::TextDisplay;
 
 pub use image::ImageFormat;
 
+use std::sync::Arc;
+
 #[derive(Clone)]
-pub enum Drawable<'a> {
-    Texture(&'a SimpleTexture),
-    Text(&'a TextDisplay<&'a FontTexture>, (f32, f32, f32, f32)),
+pub enum Drawable {
+    Texture(Arc<SimpleTexture>),
+    Text(Arc<TextDisplay<Arc<FontTexture>>>, (f32, f32, f32, f32)),
 }
 
-impl<'a> Drawable<'a> {
-    pub fn from_texture(texture: &'a SimpleTexture) -> Self {
+impl Drawable {
+    pub fn from_texture(texture: Arc<SimpleTexture>) -> Self {
         Drawable::Texture(texture)
     }
 
-    pub fn from_font(text: &'a TextDisplay<&FontTexture>, color: (f32, f32, f32, f32)) -> Self {
+    pub fn from_font(text: Arc<TextDisplay<Arc<FontTexture>>>, color: (f32, f32, f32, f32)) -> Self {
         Drawable::Text(text, color)
     }
 }

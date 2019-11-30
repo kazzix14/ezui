@@ -45,7 +45,7 @@ impl System {
                 let ib = &sys.index_buffer;
                 let prog = &sys.program;
 
-                let uniforms = &uniform!(matrix: matrix, tex: *texture);
+                let uniforms = &uniform!(matrix: matrix, tex: texture.as_ref());
 
                 let params = &DrawParameters {
                     blend: glium::Blend::alpha_blending(),
