@@ -64,7 +64,7 @@ fn main() {
     while !exit {
         ui.update(|target, events, mouse, system| {
             events.for_each(|ev| match ev {
-                winit::Event::Closed => exit = true,
+                glutin::Event::Closed => exit = true,
                 _ => (),
             });
 

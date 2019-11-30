@@ -8,13 +8,13 @@ pub mod widget;
 pub use drawable::*;
 pub use glium;
 use glium::backend::glutin_backend;
+use glium::backend::glutin_backend::glutin;
 pub use glium_text::*;
 use glium_text_rusttype as glium_text;
 use image;
 pub use image::ImageFormat;
 use mouse::*;
 use system::System;
-pub use winit;
 
 pub struct Ui<'a> {
     mouse: MouseStatus,
@@ -37,7 +37,7 @@ impl<'a> Ui<'a> {
     where
         F: FnOnce(
             &mut glium::Frame,
-            &mut std::vec::IntoIter<winit::Event>,
+            &mut std::vec::IntoIter<glutin::Event>,
             &mut MouseStatus,
             &mut System,
         ),

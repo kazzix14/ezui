@@ -1,4 +1,4 @@
-use glium::backend::glutin_backend;
+use glium::backend::glutin_backend::glutin;
 
 #[derive(Default, Clone, Copy, Debug, PartialEq)]
 pub struct MouseStatus {
@@ -8,9 +8,9 @@ pub struct MouseStatus {
 }
 
 impl MouseStatus {
-    pub fn update(&mut self, target: &glium::Frame, events: &mut std::vec::IntoIter<winit::Event>) {
+    pub fn update(&mut self, target: &glium::Frame, events: &mut std::vec::IntoIter<glutin::Event>) {
         use glium::Surface;
-        use glutin_backend::glutin::Event::*;
+        use glutin::Event::*;
 
         self.delta_position = (0.0, 0.0);
 
@@ -50,12 +50,12 @@ pub struct MouseButtonStatus {
 impl MouseButtonStatus {
     fn update(
         &mut self,
-        state: winit::ElementState,
-        button: winit::MouseButton,
+        state: glutin::ElementState,
+        button: glutin::MouseButton,
         position: (f32, f32),
     ) {
-        use winit::ElementState;
-        use winit::MouseButton;
+        use glutin::ElementState;
+        use glutin::MouseButton;
 
         let state = match state {
             ElementState::Pressed => ButtonState::Pressed(position.0, position.1),
