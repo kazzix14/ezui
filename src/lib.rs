@@ -6,6 +6,7 @@ mod system;
 pub mod widget;
 
 pub use drawable::*;
+pub use glium;
 use glium::backend::glutin_backend;
 pub use glium_text::*;
 use glium_text_rusttype as glium_text;

@@ -3,10 +3,9 @@ use ezui::standard::*;
 use ezui::widget::*;
 use ezui::*;
 
-use glium;
-use glium::glutin;
-use glium::DisplayBuild;
-use glium::Surface;
+use ezui::glium::glutin;
+use ezui::glium::DisplayBuild;
+use ezui::glium::Surface;
 
 pub const FONT_RAW: &'static [u8] = include_bytes!("resource/OpenSans-Regular.ttf");
 pub const KNOB_BASE_WHITE_RAW: &'static [u8] = include_bytes!("resource/white.png");
