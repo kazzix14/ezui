@@ -34,78 +34,62 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut button1 = UiButtonBuilder::default()
-        .position((0.1, 0.1))
-        .size((0.15, 0.1))
-        .build()
-        .unwrap();
-
-    let mut button2 = UiButtonBuilder::default()
+    let mut button = UiButtonBuilder::default()
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .build()
         .unwrap();
 
-    let texture = SimpleTexture::from(&KNOB_BASE_WHITE_RAW, ImageFormat::PNG, &display).unwrap();
+    let texture_knob_base =
+        SimpleTexture::from(&KNOB_BASE_WHITE_RAW, ImageFormat::PNG, &display).unwrap();
     let knob_base = UiTextureBuilder::default()
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(&texture)
+        .texture(&texture_knob_base)
         .build()
         .unwrap();
 
-    let texture = SimpleTexture::from(&KNOB_LIGHT_RAW, ImageFormat::PNG, &display).unwrap();
+    let texture_knob_light =
+        SimpleTexture::from(&KNOB_LIGHT_RAW, ImageFormat::PNG, &display).unwrap();
     let mut knob_light = UiTextureBuilder::default()
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(&texture)
+        .texture(&texture_knob_light)
         .build()
         .unwrap();
 
-    loop {
-        ui.update(|target, mouse, system| {
-            button1.update(&mouse);
-            button2.update(&mouse);
+    let mut exit = false;
+    while !exit {
+        ui.update(|target, events, mouse, system| {
+            events.for_each(|ev| match ev {
+                winit::Event::Closed => exit = true,
+                _ => (),
+            });
+
+            button.update(&mouse);
 
             target.clear_color(0.4, 0.4, 0.4, 1.0);
 
-            match *button1.left() {
-                ButtonState::Pressed(_x, _y) => {
-                    text.set_text("world");
-                    text.color.0 += mouse.delta_position().0 * 2.55;
-                    text.color.1 += mouse.delta_position().1 * 2.55;
-                }
-                _ => {
-                    text.set_text("hello");
-                }
-            }
-            match *button1.right() {
-                ButtonState::Pressed(_x, _y) => {
-                    text.set_text("MOVE!");
-                    text.position.0 += mouse.delta_position().0 * 5.0;
-                    text.position.1 += mouse.delta_position().1 * 5.0;
-                    button1.position.0 += mouse.delta_position().0 * 5.0;
-                    button1.position.1 += mouse.delta_position().1 * 5.0;
-                }
-                _ => {
-                    text.set_text("hello");
-                }
-            }
+            button
+                .state()
+                .iter()
+                .for_each(|(button, state)| match state {
+                    ButtonState::Pressed(_x, _y) => {
+                        let scale = match button {
+                            MouseButton::Left => 1.0,
+                            MouseButton::Middle => 0.25,
+                            MouseButton::Right => 3.0,
+                        };
 
-            match *button2.left() {
-                ButtonState::Pressed(_x, _y) => {
-                    knob_light.rotation += mouse.delta_position().1 * 360.0;
-                }
-                _ => (),
-            }
-            match *button2.right() {
-                ButtonState::Pressed(_x, _y) => {
-                    knob_light.rotation += mouse.delta_position().1 * 360.0 * 2.0;
-                }
-                _ => (),
-            }
+                        knob_light.rotation += mouse.delta_position().1 * 360.0 * scale;
+                    }
+                    _ => (),
+                });
+
+            text.color.1 = mouse.position().0;
+            text.color.2 = mouse.position().1;
 
             text.draw(target, system);
             knob_base.draw(target, system);

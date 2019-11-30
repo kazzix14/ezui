@@ -54,10 +54,15 @@ pub trait Widget {
     }
 }
 
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub enum MouseButton {
+    Left,
+    Middle,
+    Right,
+}
+
 pub trait Pressable: Widget {
-    fn left(&self) -> &ButtonState;
-    fn middle(&self) -> &ButtonState;
-    fn right(&self) -> &ButtonState;
+    fn state(&self) -> [(MouseButton, ButtonState); 3];
     fn update(&mut self, mouse: &MouseStatus);
 }
 

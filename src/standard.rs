@@ -3,7 +3,6 @@ use crate::mouse::*;
 use crate::widget::*;
 
 use derive_builder::Builder;
-
 use glium_text_rusttype::*;
 
 #[derive(Builder)]
@@ -75,14 +74,12 @@ impl Widget for UiButton {
 }
 
 impl Pressable for UiButton {
-    fn left(&self) -> &ButtonState {
-        &self.left
-    }
-    fn middle(&self) -> &ButtonState {
-        &self.middle
-    }
-    fn right(&self) -> &ButtonState {
-        &self.right
+    fn state(&self) -> [(MouseButton, ButtonState); 3] {
+        [
+            (MouseButton::Left, self.left),
+            (MouseButton::Middle, self.middle),
+            (MouseButton::Right, self.right),
+        ]
     }
 
     fn update(&mut self, mouse: &MouseStatus) {

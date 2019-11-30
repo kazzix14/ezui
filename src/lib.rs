@@ -1,4 +1,4 @@
-pub mod drawable;
+mod drawable;
 pub mod mouse;
 mod resource;
 pub mod standard;
@@ -14,6 +14,7 @@ use image;
 pub use image::ImageFormat;
 use mouse::*;
 use system::System;
+pub use winit;
 
 pub struct Ui<'a> {
     mouse: MouseStatus,
@@ -34,17 +35,31 @@ impl<'a> Ui<'a> {
 
     pub fn update<F>(&mut self, update_func: F)
     where
-        F: FnOnce(&mut glium::Frame, &mut MouseStatus, &mut System),
+        F: FnOnce(
+            &mut glium::Frame,
+            &mut std::vec::IntoIter<winit::Event>,
+            &mut MouseStatus,
+            &mut System,
+        ),
     {
         let display = self.display;
         let mouse = &mut self.mouse;
         let system = &mut self.system;
 
-        let events = display.poll_events();
-        let mut target = display.draw();
-        mouse.update(&target, events);
+        let mut events = {
+            let mut v1 = Vec::new();
+            let mut v2 = Vec::new();
+            for ev in display.poll_events() {
+                v1.push(ev.clone());
+                v2.push(ev);
+            }
+            (v1.into_iter(), v2.into_iter())
+        };
 
-        update_func(&mut target, mouse, system);
+        let mut target = display.draw();
+        mouse.update(&target, &mut events.0);
+
+        update_func(&mut target, &mut events.1, mouse, system);
         target.finish().unwrap();
     }
 

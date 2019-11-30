@@ -8,24 +8,26 @@ pub struct MouseStatus {
 }
 
 impl MouseStatus {
-    pub fn update(&mut self, target: &glium::Frame, events: glutin_backend::PollEventsIter) {
+    pub fn update(&mut self, target: &glium::Frame, events: &mut std::vec::IntoIter<winit::Event>) {
         use glium::Surface;
         use glutin_backend::glutin::Event::*;
 
         self.delta_position = (0.0, 0.0);
 
-        events.for_each(|ev| match ev {
-            MouseMoved(x, y) => {
-                let (w, h) = target.get_dimensions();
-                let (w, h) = (w as f32, h as f32);
-                let (x, y) = (x as f32, y as f32);
-                let (x, y) = (x / w, y / h);
-                self.delta_position = (x - self.position.0, y - self.position.1);
-                self.position = (x, y);
+        for ev in events {
+            match ev {
+                MouseMoved(x, y) => {
+                    let (w, h) = target.get_dimensions();
+                    let (w, h) = (w as f32, h as f32);
+                    let (x, y) = (x as f32, y as f32);
+                    let (x, y) = (x / w, y / h);
+                    self.delta_position = (x - self.position.0, y - self.position.1);
+                    self.position = (x, y);
+                }
+                MouseInput(state, button) => self.button.update(state, button, self.position),
+                _ => (),
             }
-            MouseInput(state, button) => self.button.update(state, button, self.position),
-            _ => (),
-        });
+        }
     }
     pub fn position(&self) -> (f32, f32) {
         self.position
