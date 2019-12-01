@@ -13,7 +13,7 @@ pub struct UiTexture {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub rotation: f32,
-    texture: SimpleTexture,
+    texture: Box<SimpleTexture>,
 }
 
 impl Widget for UiTexture {

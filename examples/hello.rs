@@ -48,7 +48,7 @@ fn main() {
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(texture_knob_base)
+        .texture(Box::new(texture_knob_base))
         .build()
         .unwrap();
 
@@ -58,7 +58,7 @@ fn main() {
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(texture_knob_light)
+        .texture(Box::new(texture_knob_light))
         .build()
         .unwrap();
 
