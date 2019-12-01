@@ -13,8 +13,8 @@ description = "An eazy-to-use small GUI library. main purpose of this crate is t
 
 [dependencies]
 derive_builder = "0.9.0"
-glium = "0.16.0"
-glium_text_rusttype = "0.0.4"
+glium = "0.15.0"
+glium_text_rusttype = "0.0.2"
 winit = {version = "0.5.9", git = "https://github.com/Boscop/winit-vst"}
 image = "0.22.1"
 nalgebra = "0.18.1"
