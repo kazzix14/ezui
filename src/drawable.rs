@@ -15,11 +15,9 @@ use text::TextDisplay;
 
 pub use image::ImageFormat;
 
-use std::sync::Arc;
-
 pub enum Drawable<'a> {
     Texture(&'a SimpleTexture),
-    Text(Arc<TextDisplay<Arc<FontTexture>>>, (f32, f32, f32, f32)),
+    Text(&'a TextDisplay<&'a FontTexture>, (f32, f32, f32, f32)),
 }
 
 impl<'a> Drawable<'a> {
@@ -28,7 +26,7 @@ impl<'a> Drawable<'a> {
     }
 
     pub fn from_font(
-        text: Arc<TextDisplay<Arc<FontTexture>>>,
+        text: &'a TextDisplay<&'a FontTexture>,
         color: (f32, f32, f32, f32),
     ) -> Self {
         Drawable::Text(text, color)

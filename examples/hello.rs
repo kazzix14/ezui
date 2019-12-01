@@ -26,12 +26,12 @@ fn main() {
     let font =
         FontTexture::new(&display, FONT_RAW, 50, FontTexture::ascii_character_list()).unwrap();
 
-    let text_display = ui.build_text_display(Arc::new(font), "hello");
+    let text_display = ui.build_text_display(&font, "hello");
 
     let mut text = UiTextBuilder::default()
         .position((0.1, 0.1))
         .size((0.15, 0.1))
-        .text(Arc::new(text_display))
+        .text(text_display)
         .color((0.1, 0.1, 0.1, 1.0))
         .build()
         .unwrap();
@@ -48,7 +48,7 @@ fn main() {
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(Box::new(texture_knob_base))
+        .texture(&texture_knob_base)
         .build()
         .unwrap();
 
@@ -58,7 +58,7 @@ fn main() {
         .position((0.5, 0.5))
         .size((0.3, 0.3))
         .rotation(0.0)
-        .texture(Box::new(texture_knob_light))
+        .texture(&texture_knob_light)
         .build()
         .unwrap();
 

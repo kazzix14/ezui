@@ -65,11 +65,11 @@ impl Ui {
         target.finish().unwrap();
     }
 
-    pub fn build_text_display(
+    pub fn build_text_display<'a>(
         &self,
-        font: Arc<glium_text_rusttype::FontTexture>,
+        font: &'a glium_text_rusttype::FontTexture,
         text: &'static str,
-    ) -> TextDisplay<Arc<FontTexture>> {
+    ) -> TextDisplay<&'a FontTexture> {
         TextDisplay::new(&self.system.text_system, font, text)
     }
 }

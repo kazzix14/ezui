@@ -9,14 +9,14 @@ use glium_text_rusttype::*;
 
 #[derive(Builder)]
 #[builder(pattern = "owned")]
-pub struct UiTexture {
+pub struct UiTexture<'a> {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub rotation: f32,
-    texture: Box<SimpleTexture>,
+    texture: &'a SimpleTexture,
 }
 
-impl Widget for UiTexture {
+impl<'a> Widget for UiTexture<'a> {
     fn position(&self) -> (f32, f32) {
         self.position
     }
@@ -42,7 +42,7 @@ impl Widget for UiTexture {
     }
 }
 
-impl Rotatable for UiTexture {
+impl<'a> Rotatable for UiTexture<'a> {
     fn rotation(&self) -> f32 {
         self.rotation
     }
@@ -105,19 +105,19 @@ impl Pressable for UiButton {
 
 #[derive(Builder)]
 #[builder(build_fn(skip), pattern = "owned")]
-pub struct UiText {
+pub struct UiText<'a> {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub color: (f32, f32, f32, f32),
 
-    text: Arc<TextDisplay<Arc<FontTexture>>>,
+    text: TextDisplay<&'a FontTexture>,
     #[builder(setter(skip))]
     text_size: (f32, f32),
 }
 
 #[allow(dead_code)]
-impl UiTextBuilder {
-    pub fn build(self) -> Result<UiText, String> {
+impl<'a> UiTextBuilder<'a> {
+    pub fn build(self) -> Result<UiText<'a>, String> {
         let text = self.text.ok_or("text must be inititalized")?;
         let text_size = (text.get_width(), text.get_height());
         Ok(UiText {
@@ -130,14 +130,14 @@ impl UiTextBuilder {
     }
 }
 
-impl UiText {
-    pub fn set_text(&mut self, text: Arc<TextDisplay<Arc<FontTexture>>>) {
-        self.text = text;
+impl<'a> UiText<'a> {
+    pub fn set_text(&mut self, string: &'static str) {
+        self.text.set_text(string);
         self.text_size = (self.text.get_width(), self.text.get_height());
     }
 }
 
-impl Widget for UiText {
+impl<'a> Widget for UiText<'a> {
     fn position(&self) -> (f32, f32) {
         self.position
     }
@@ -164,9 +164,7 @@ impl Widget for UiText {
     }
 
     fn drawable(&self) -> Option<Drawable> {
-        let text = Arc::clone(&self.text);
-        let color = self.color;
-        Some(Drawable::from_font(text, color))
+        Some(Drawable::from_font(&self.text, self.color))
     }
 }
 
