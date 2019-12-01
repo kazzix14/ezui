@@ -9,14 +9,14 @@ use glium_text_rusttype::*;
 
 #[derive(Builder)]
 #[builder(pattern = "owned")]
-pub struct UiTexture<'a> {
+pub struct UiTexture {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub rotation: f32,
-    texture: &'a SimpleTexture,
+    texture: Arc<SimpleTexture>,
 }
 
-impl<'a> Widget for UiTexture<'a> {
+impl Widget for UiTexture {
     fn position(&self) -> (f32, f32) {
         self.position
     }
@@ -26,7 +26,7 @@ impl<'a> Widget for UiTexture<'a> {
     }
 
     fn drawable(&self) -> Option<Drawable> {
-        Some(Drawable::Texture(&self.texture))
+        Some(Drawable::Texture(Arc::clone(&self.texture)))
     }
     fn matrix(&self) -> [[f32; 4]; 4] {
         let mat = [
@@ -42,7 +42,7 @@ impl<'a> Widget for UiTexture<'a> {
     }
 }
 
-impl<'a> Rotatable for UiTexture<'a> {
+impl Rotatable for UiTexture {
     fn rotation(&self) -> f32 {
         self.rotation
     }
@@ -105,19 +105,19 @@ impl Pressable for UiButton {
 
 #[derive(Builder)]
 #[builder(build_fn(skip), pattern = "owned")]
-pub struct UiText<'a> {
+pub struct UiText {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub color: (f32, f32, f32, f32),
 
-    text: TextDisplay<&'a FontTexture>,
+    text: Box<TextDisplay<Arc<FontTexture>>>,
     #[builder(setter(skip))]
     text_size: (f32, f32),
 }
 
 #[allow(dead_code)]
-impl<'a> UiTextBuilder<'a> {
-    pub fn build(self) -> Result<UiText<'a>, String> {
+impl UiTextBuilder {
+    pub fn build(self) -> Result<UiText, String> {
         let text = self.text.ok_or("text must be inititalized")?;
         let text_size = (text.get_width(), text.get_height());
         Ok(UiText {
@@ -130,14 +130,14 @@ impl<'a> UiTextBuilder<'a> {
     }
 }
 
-impl<'a> UiText<'a> {
+impl UiText {
     pub fn set_text(&mut self, string: &'static str) {
         self.text.set_text(string);
         self.text_size = (self.text.get_width(), self.text.get_height());
     }
 }
 
-impl<'a> Widget for UiText<'a> {
+impl Widget for UiText {
     fn position(&self) -> (f32, f32) {
         self.position
     }

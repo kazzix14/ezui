@@ -12,21 +12,22 @@ use image::ImageError;
 use std::io::Cursor;
 use text::FontTexture;
 use text::TextDisplay;
+use std::sync::Arc;
 
 pub use image::ImageFormat;
 
 pub enum Drawable<'a> {
-    Texture(&'a SimpleTexture),
-    Text(&'a TextDisplay<&'a FontTexture>, (f32, f32, f32, f32)),
+    Texture(Arc<SimpleTexture>),
+    Text(&'a TextDisplay<Arc<FontTexture>>, (f32, f32, f32, f32)),
 }
 
 impl<'a> Drawable<'a> {
-    pub fn from_texture(texture: &'a SimpleTexture) -> Self {
+    pub fn from_texture(texture: Arc<SimpleTexture>) -> Self {
         Drawable::Texture(texture)
     }
 
     pub fn from_font(
-        text: &'a TextDisplay<&'a FontTexture>,
+        text: &'a TextDisplay<Arc<FontTexture>>,
         color: (f32, f32, f32, f32),
     ) -> Self {
         Drawable::Text(text, color)
