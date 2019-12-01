@@ -17,18 +17,20 @@ pub use image::ImageFormat;
 
 use std::sync::Arc;
 
-#[derive(Clone)]
-pub enum Drawable {
-    Texture(Arc<SimpleTexture>),
+pub enum Drawable<'a> {
+    Texture(&'a SimpleTexture),
     Text(Arc<TextDisplay<Arc<FontTexture>>>, (f32, f32, f32, f32)),
 }
 
-impl Drawable {
-    pub fn from_texture(texture: Arc<SimpleTexture>) -> Self {
+impl<'a> Drawable<'a> {
+    pub fn from_texture(texture: &'a SimpleTexture) -> Self {
         Drawable::Texture(texture)
     }
 
-    pub fn from_font(text: Arc<TextDisplay<Arc<FontTexture>>>, color: (f32, f32, f32, f32)) -> Self {
+    pub fn from_font(
+        text: Arc<TextDisplay<Arc<FontTexture>>>,
+        color: (f32, f32, f32, f32),
+    ) -> Self {
         Drawable::Text(text, color)
     }
 }
@@ -75,6 +77,12 @@ impl AsUniformValue for SimpleTexture {
 }
 
 impl AsUniformValue for &SimpleTexture {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::CompressedSrgbTexture2d(&self.0, None)
+    }
+}
+
+impl AsUniformValue for &mut SimpleTexture {
     fn as_uniform_value(&self) -> UniformValue {
         UniformValue::CompressedSrgbTexture2d(&self.0, None)
     }

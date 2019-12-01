@@ -13,7 +13,7 @@ pub struct UiTexture {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub rotation: f32,
-    texture: Arc<SimpleTexture>,
+    texture: SimpleTexture,
 }
 
 impl Widget for UiTexture {
@@ -26,7 +26,7 @@ impl Widget for UiTexture {
     }
 
     fn drawable(&self) -> Option<Drawable> {
-        Some(Drawable::Texture(Arc::clone(&self.texture)))
+        Some(Drawable::Texture(&self.texture))
     }
     fn matrix(&self) -> [[f32; 4]; 4] {
         let mat = [
