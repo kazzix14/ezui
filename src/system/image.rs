@@ -1,9 +1,9 @@
 use crate::resource;
 
-use glium::*;
 use glium::backend::Facade;
 use glium::index::IndexBufferAny;
 use glium::index::PrimitiveType::TriangleStrip;
+use glium::*;
 
 pub struct ImageSystem {
     pub program: program::Program,
@@ -12,8 +12,11 @@ pub struct ImageSystem {
 }
 
 impl ImageSystem {
-    pub fn new<F>(display: &F) -> Self where F: Facade{
-
+    #[allow(deprecated)]
+    pub fn new<F>(display: &F) -> Self
+    where
+        F: Facade,
+    {
         let vertex_buffer = {
             #[derive(Clone, Copy)]
             struct Vertex {
@@ -47,12 +50,7 @@ impl ImageSystem {
             .unwrap()
         };
 
-        let index_buffer = IndexBuffer::new(
-            display,
-            TriangleStrip,
-            &[1 as u16, 2, 0, 3],
-        )
-        .unwrap();
+        let index_buffer = IndexBuffer::new(display, TriangleStrip, &[1 as u16, 2, 0, 3]).unwrap();
 
         let program = program!(display,
         100 => {

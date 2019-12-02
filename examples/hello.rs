@@ -4,8 +4,10 @@ use ezui::widget::*;
 use ezui::*;
 
 use ezui::glium::glutin;
-use ezui::glium::DisplayBuild;
+//use ezui::glium::DisplayBuild;
 use ezui::glium::Surface;
+
+use winit::dpi::LogicalSize;
 
 use std::sync::Arc;
 
@@ -15,16 +17,25 @@ pub const KNOB_BASE_BLACK_RAW: &'static [u8] = include_bytes!("resource/black.pn
 pub const KNOB_LIGHT_RAW: &'static [u8] = include_bytes!("resource/light.png");
 
 fn main() {
-    let display = glutin::WindowBuilder::new()
-        .with_dimensions(640, 640)
-        .with_vsync()
-        .build_glium()
-        .unwrap();
+    let events_loop = glutin::EventsLoop::new();
+    let window_builder = glutin::WindowBuilder::new()
+        .with_title("hello")
+        .with_dimensions(LogicalSize::new(640.0, 640.0));
 
-    let mut ui = Ui::new(display.clone());
+    let context_builder = glutin::ContextBuilder::new();
+
+    let display = glium::Display::new(window_builder, context_builder, &events_loop).unwrap();
+
+    let texture_knob_base =
+        SimpleTexture::from(&KNOB_BASE_WHITE_RAW, ImageFormat::PNG, &display).unwrap();
+
+    let texture_knob_light =
+        SimpleTexture::from(&KNOB_LIGHT_RAW, ImageFormat::PNG, &display).unwrap();
 
     let font =
         FontTexture::new(&display, FONT_RAW, 50, FontTexture::ascii_character_list()).unwrap();
+
+    let mut ui = Ui::new(display, events_loop);
 
     let text_display = ui.build_text_display(Arc::new(font), "hello");
 
@@ -42,8 +53,6 @@ fn main() {
         .build()
         .unwrap();
 
-    let texture_knob_base =
-        SimpleTexture::from(&KNOB_BASE_WHITE_RAW, ImageFormat::PNG, &display).unwrap();
     let knob_base = UiTextureBuilder::default()
         .position((0.5, 0.5))
         .size((0.3, 0.3))
@@ -52,8 +61,6 @@ fn main() {
         .build()
         .unwrap();
 
-    let texture_knob_light =
-        SimpleTexture::from(&KNOB_LIGHT_RAW, ImageFormat::PNG, &display).unwrap();
     let mut knob_light = UiTextureBuilder::default()
         .position((0.5, 0.5))
         .size((0.3, 0.3))
@@ -65,9 +72,13 @@ fn main() {
     let mut exit = false;
     while !exit {
         ui.update(|target, events, mouse, system| {
-            events.for_each(|ev| match ev {
-                glutin::Event::Closed => exit = true,
-                _ => (),
+            events.for_each(|ev| {
+                if let glutin::Event::WindowEvent { event, .. } = ev {
+                    match event {
+                        glutin::WindowEvent::CloseRequested => exit = true,
+                        _ => (),
+                    }
+                }
             });
 
             button.update(&mouse);

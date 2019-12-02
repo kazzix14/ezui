@@ -7,31 +7,33 @@ pub mod widget;
 
 pub use drawable::*;
 pub use glium;
-use glium::backend::glutin_backend;
-use glium::backend::glutin_backend::glutin;
-pub use glium_text::*;
-use glium_text_rusttype as glium_text;
+use glium::backend::glutin as glutin_backend;
+use glium::backend::glutin::glutin;
+use glium_text_rusttype;
+pub use glium_text_rusttype::*;
 use image;
 pub use image::ImageFormat;
 use mouse::*;
+use std::sync::Arc;
 use system::System;
 pub use winit;
-use std::sync::Arc;
 
 pub struct Ui {
     mouse: MouseStatus,
-    display: glutin_backend::GlutinFacade,
+    display: glutin_backend::Display,
+    events_loop: glutin::EventsLoop,
     system: System,
 }
 
 impl Ui {
-    pub fn new(display: glutin_backend::GlutinFacade) -> Ui {
+    pub fn new(display: glutin_backend::Display, events_loop: glutin::EventsLoop) -> Ui {
         let system = System::new(&display);
 
         Ui {
             mouse: MouseStatus::default(),
-            display: display,
-            system: system,
+            display,
+            events_loop,
+            system,
         }
     }
 
@@ -45,17 +47,18 @@ impl Ui {
         ),
     {
         let display = &self.display;
+        let events_loop = &mut self.events_loop;
         let mouse = &mut self.mouse;
         let system = &mut self.system;
 
         let mut events = {
-            let mut v1 = Vec::new();
-            let mut v2 = Vec::new();
-            for ev in display.poll_events() {
-                v1.push(ev.clone());
-                v2.push(ev);
-            }
-            (v1.into_iter(), v2.into_iter())
+            let mut events1 = Vec::new();
+            let mut events2 = Vec::new();
+            events_loop.poll_events(|event| {
+                events1.push(event.clone());
+                events2.push(event);
+            });
+            (events1.into_iter(), events2.into_iter())
         };
 
         let mut target = display.draw();

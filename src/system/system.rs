@@ -36,7 +36,7 @@ impl System {
         match drawable {
             Drawable::Text(text, color) => {
                 let sys = &self.text_system;
-                text::draw(text, sys, target, matrix, *color);
+                text::draw(text, sys, target, matrix, *color).unwrap();
             }
             Drawable::Texture(texture) => {
                 let sys = &self.image_system;

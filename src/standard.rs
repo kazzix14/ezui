@@ -111,21 +111,17 @@ pub struct UiText {
     pub color: (f32, f32, f32, f32),
 
     text: Box<TextDisplay<Arc<FontTexture>>>,
-    #[builder(setter(skip))]
-    text_size: (f32, f32),
 }
 
 #[allow(dead_code)]
 impl UiTextBuilder {
     pub fn build(self) -> Result<UiText, String> {
         let text = self.text.ok_or("text must be inititalized")?;
-        let text_size = (text.get_width(), text.get_height());
         Ok(UiText {
             position: self.position.ok_or("position must be inititalized")?,
             size: self.size.ok_or("size must be inititalized")?,
             color: self.color.ok_or("color must be inititalized")?,
             text: text,
-            text_size: text_size,
         })
     }
 }
@@ -133,7 +129,6 @@ impl UiTextBuilder {
 impl UiText {
     pub fn set_text(&mut self, string: &'static str) {
         self.text.set_text(string);
-        self.text_size = (self.text.get_width(), self.text.get_height());
     }
 }
 
@@ -149,8 +144,7 @@ impl Widget for UiText {
     fn size_adjusted(&self) -> (f32, f32) {
         let (w, h) = self.size();
         let tw = self.text.get_width();
-        let th = self.text.get_height();
-        (2.0 * w / tw, 2.0 * h / th)
+        (2.0 * w / tw, 2.0 * h)
     }
 
     fn position_adjusted(&self) -> (f32, f32) {

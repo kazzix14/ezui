@@ -10,9 +10,9 @@ use glium::uniforms::AsUniformValue;
 use glium::uniforms::UniformValue;
 use image::ImageError;
 use std::io::Cursor;
+use std::sync::Arc;
 use text::FontTexture;
 use text::TextDisplay;
-use std::sync::Arc;
 
 pub use image::ImageFormat;
 
@@ -26,10 +26,7 @@ impl<'a> Drawable<'a> {
         Drawable::Texture(texture)
     }
 
-    pub fn from_font(
-        text: &'a TextDisplay<Arc<FontTexture>>,
-        color: (f32, f32, f32, f32),
-    ) -> Self {
+    pub fn from_font(text: &'a TextDisplay<Arc<FontTexture>>, color: (f32, f32, f32, f32)) -> Self {
         Drawable::Text(text, color)
     }
 }
@@ -60,7 +57,7 @@ impl SimpleTexture {
         };
 
         let image_dimensions = image.dimensions();
-        let image = RawImage2d::from_raw_rgba_reversed(image.into_raw(), image_dimensions);
+        let image = RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
 
         match CompressedSrgbTexture2d::new(display, image) {
             Ok(texture) => Ok(SimpleTexture(texture)),
