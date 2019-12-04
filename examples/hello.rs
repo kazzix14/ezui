@@ -37,7 +37,7 @@ fn main() {
 
     let mut ui = Ui::new(display, events_loop);
 
-    let text_display = ui.build_text_display(Arc::new(font), "hello");
+    let text_display = ui.build_text_display(Arc::new(font), "hello world");
 
     let mut text = UiTextBuilder::default()
         .position((0.1, 0.1))
