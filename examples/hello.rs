@@ -17,7 +17,7 @@ pub const KNOB_BASE_BLACK_RAW: &'static [u8] = include_bytes!("resource/black.pn
 pub const KNOB_LIGHT_RAW: &'static [u8] = include_bytes!("resource/light.png");
 
 fn main() {
-    let events_loop = glutin::EventsLoop::new();
+    let events_loop = glutin::EventLoop::new();
     let window_builder = glutin::WindowBuilder::new()
         .with_title("hello")
         .with_dimensions(LogicalSize::new(640.0, 640.0));
@@ -73,7 +73,7 @@ fn main() {
     while !exit {
         ui.update(|target, events, mouse, system| {
             events.for_each(|ev| {
-                if let glutin::Event::WindowEvent { event, .. } = ev {
+                if let *const glutin::Event::WindowEvent { event, .. } = Arc::as_ptr(&ev) {
                     match event {
                         glutin::WindowEvent::CloseRequested => exit = true,
                         _ => (),

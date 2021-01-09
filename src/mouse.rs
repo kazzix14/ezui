@@ -1,4 +1,6 @@
-use glium::backend::glutin::glutin;
+//use glium::backend::glutin::glutin;
+use glutin;
+use std::sync::Arc;
 
 #[derive(Default, Clone, Copy, Debug, PartialEq)]
 pub struct MouseStatus {
@@ -11,12 +13,12 @@ impl MouseStatus {
     pub fn update(
         &mut self,
         target: &glium::Frame,
-        events: &mut std::vec::IntoIter<glutin::Event>,
+        events: &mut std::vec::IntoIter<glutin::event::Event<()>>,
     ) {
         use glium::Surface;
-        use glutin::Event::*;
-        use glutin::WindowEvent::*;
-        use winit::dpi::LogicalPosition;
+        use glutin::event::Event::*;
+        use glutin::event::WindowEvent::*;
+        use glutin::dpi::PhysicalPosition;
 
         self.delta_position = (0.0, 0.0);
 
@@ -24,7 +26,7 @@ impl MouseStatus {
             if let WindowEvent { event: ev, .. } = ev {
                 match ev {
                     CursorMoved {
-                        position: LogicalPosition { x, y },
+                        position: PhysicalPosition{ x, y },
                         ..
                     } => {
                         let (w, h) = target.get_dimensions();
@@ -63,12 +65,12 @@ pub struct MouseButtonStatus {
 impl MouseButtonStatus {
     fn update(
         &mut self,
-        state: glutin::ElementState,
-        button: glutin::MouseButton,
+        state: glutin::event::ElementState,
+        button: glutin::event::MouseButton,
         position: (f32, f32),
     ) {
-        use glutin::ElementState;
-        use glutin::MouseButton;
+        use glutin::event::ElementState;
+        use glutin::event::MouseButton;
 
         let state = match state {
             ElementState::Pressed => ButtonState::Pressed(position.0, position.1),

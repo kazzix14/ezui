@@ -8,25 +8,29 @@ pub mod widget;
 pub use drawable::*;
 pub use glium;
 use glium::backend::glutin as glutin_backend;
-use glium::backend::glutin::glutin;
+//use glium::backend::glutin::glutin;
+use glutin;
+use glutin::platform::run_return::EventLoopExtRunReturn;
+use glutin::event_loop::ControlFlow;
 use glium_text_rusttype;
 pub use glium_text_rusttype::*;
 use image;
 pub use image::ImageFormat;
 use mouse::*;
 use std::sync::Arc;
+use std::sync::mpsc;
 use system::System;
 pub use winit;
 
 pub struct Ui {
     mouse: MouseStatus,
     display: glutin_backend::Display,
-    events_loop: glutin::EventsLoop,
+    events_loop: glutin::event_loop::EventLoop<()>,
     system: System,
 }
 
 impl Ui {
-    pub fn new(display: glutin_backend::Display, events_loop: glutin::EventsLoop) -> Ui {
+    pub fn new(display: glutin_backend::Display, events_loop: glutin::event_loop::EventLoop<()>) -> Ui {
         let system = System::new(&display);
 
         Ui {
@@ -41,7 +45,7 @@ impl Ui {
     where
         F: FnOnce(
             &mut glium::Frame,
-            &mut std::vec::IntoIter<glutin::Event>,
+            &mut std::vec::IntoIter<glutin::event::Event<'static, ()>>,
             &mut MouseStatus,
             &mut System,
         ),
@@ -52,12 +56,17 @@ impl Ui {
         let system = &mut self.system;
 
         let mut events = {
-            let mut events1 = Vec::new();
-            let mut events2 = Vec::new();
-            events_loop.poll_events(|event| {
-                events1.push(event.clone());
-                events2.push(event);
+            //let mut events1 = Vec::new();
+            //let mut events2 = Vec::new();
+            let (tx, rx) = mpsc::channel();
+            events_loop.run_return(|event, _target, control_flow| {
+                //events1.push(event.clone());
+                //events2.push(event.clone());
+                tx.send(event).unwrap();
+                *control_flow = ControlFlow::Exit;
             });
+            let events1 = rx.iter().collect::<Vec<_>>();
+            let events2 = events1.clone();
             (events1.into_iter(), events2.into_iter())
         };
 
